@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NEO98 LunarisOS Documentation</title>
+<style>
+  /* Reset and base */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #222;
+    background-color: #fafafa;
+    display: flex;
+    min-height: 100vh;
+  }
+  a {
+    color: #0056b3;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+
+  /* Sidebar */
+  #sidebar {
+    background: #222831;
+    color: #eeeeee;
+    width: 280px;
+    padding: 1.5rem 1.75rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    overflow-y: auto;
+    border-right: 3px solid #00adb5;
+  }
+  #sidebar h1 {
+    font-weight: 700;
+    font-size: 1.75rem;
+    margin-bottom: 1.25rem;
+    letter-spacing: 0.05em;
+  }
+  #search-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    border: none;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    outline-offset: 2px;
+    outline-color: #00adb5;
+    background: #393e46;
+    color: #eeeeee;
+  }
+  nav ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+  }
+  nav li {
+    margin-bottom: 0.75rem;
+  }
+  nav li ul {
+    margin-top: 0.4rem;
+    margin-left: 1rem;
+    border-left: 2px solid #00adb5;
+    padding-left: 0.75rem;
+  }
+  nav li a {
+    display: block;
+    padding: 0.3rem 0.5rem;
+    border-radius: 4px;
+  }
+  nav li a.active,
+  nav li a:hover {
+    background-color: #00adb5;
+    color: #222831;
+    font-weight: 600;
+  }
+
+  /* Main content */
+  #content {
+    margin-left: 280px;
+    padding: 2.5rem 3rem;
+    max-width: 900px;
+    background: white;
+    box-shadow: 0 0 12px rgba(0,0,0,0.08);
+    flex-grow: 1;
+  }
+  #content h2 {
+    font-size: 2rem;
+    margin-top: 3rem;
+    border-bottom: 3px solid #00adb5;
+    padding-bottom: 0.3rem;
+  }
+  #content h3 {
+    margin-top: 2.25rem;
+    color: #00adb5;
+    font-weight: 600;
+  }
+  #content p {
+    margin-top: 1rem;
+    font-size: 1.1rem;
+    max-width: 780px;
+  }
+  #content ul {
+    margin: 1rem 0 1.5rem 1.25rem;
+  }
+  #content ul li {
+    margin-bottom: 0.75rem;
+  }
+  #content table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 900px;
+    margin: 1.5rem 0;
+  }
+  #content table th,
+  #content table td {
+    border: 1px solid #ddd;
+    padding: 0.65rem 1rem;
+    text-align: left;
+  }
+  #content table th {
+    background-color: #00adb5;
+    color: white;
+    font-weight: 600;
+  }
+  pre {
+    background-color: #222831;
+    color: #00ffcc;
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    font-family: "Fira Mono", Consolas, "Courier New", monospace;
+    font-size: 0.9rem;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    margin-top: 0.75rem;
+    box-shadow: inset 0 0 10px #00adb5aa;
+  }
+  code {
+    font-family: "Fira Mono", Consolas, monospace;
+    background: #e1f7f7;
+    padding: 0.1rem 0.3rem;
+    border-radius: 4px;
+    color: #007a7a;
+    font-size: 0.95rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    #sidebar {
+      position: relative;
+      width: 100%;
+      height: auto;
+      border-right: none;
+      border-bottom: 3px solid #00adb5;
+      padding-bottom: 1rem;
+    }
+    #content {
+      margin-left: 0;
+      padding: 1.5rem 1.5rem 3rem;
+      max-width: 100%;
+    }
+  }
+</style>
+</head>
+<body>
+
+<aside id="sidebar" role="navigation" aria-label="Main Navigation">
+  <h1>NEO98 LunarisOS Docs</h1>
+  <input
+    type="search"
+    id="search-input"
+    aria-label="Search documentation"
+    placeholder="Search documentation..."
+  />
+  <nav>
+    <ul id="nav-list">
+      <li><a href="#introduction">Introduction</a></li>
+      <li><a href="#boot-process">Boot Process</a></li>
+      <li>
+        <a href="#kernel">Kernel</a>
+        <ul>
+          <li><a href="#main-loop">Main Loop</a></li>
+          <li><a href="#vga-driver">VGA Driver</a></li>
+          <li><a href="#mouse-driver">Mouse Driver</a></li>
+          <li><a href="#gui-system">GUI System</a></li>
+        </ul>
+      </li>
+      <li><a href="#libraries">Libraries</a></li>
+      <li><a href="#build-and-link">Build and Link</a></li>
+      <li><a href="#source-file-overview">Source File Overview</a></li>
+      <li><a href="#search-function">Search Function</a></li>
+    </ul>
+  </nav>
+</aside>
+
+<main id="content" role="main" tabindex="-1">
+
+  <section id="introduction">
+    <h2>Introduction</h2>
+    <p>
+      <strong>NEO98 LunarisOS</strong> is a hobby operating system written mainly in C and some assembly language. It features:
+    </p>
+    <ul>
+      <li>Support for VGA text mode graphics</li>
+      <li>Simple GUI windowing system</li>
+      <li>Mouse input via PS/2 protocol</li>
+      <li>Modular kernel design with drivers and libraries</li>
+    </ul>
+  </section>
+
+  <section id="boot-process">
+    <h2>Boot Process</h2>
+    <ul>
+      <li>
+        <strong>Multiboot Header (<code>multiboot.s</code>)</strong><br />
+        The Multiboot header enables the OS to be loaded by GRUB or compatible bootloaders. It contains a magic number, flags, and a checksum.
+        <pre><code>section .multiboot
+  dd 0x1BADB002           ; magic number identifying multiboot
+  dd 0x00010003           ; flags specifying features used (e.g., memory info)
+  dd -(0x1BADB002 + 0x00010003)  ; checksum to validate header</code></pre>
+        <p><em>Explanation:</em> This assembly code declares the Multiboot header that must be placed early in the binary. The checksum ensures the sum of all three dwords is zero for validation.</p>
+      </li>
+      <li>
+        <strong>Entry Point (<code>start.s</code>)</strong><br />
+        The initial entry point disables interrupts and jumps into the kernel's main function.
+        <pre><code>global _start
+
+_start:
+  cli                 ; disable interrupts
+  call kernel_main    ; call the main C kernel function
+
+.halt:
+  hlt                 ; halt CPU until next interrupt
+  jmp .halt           ; infinite loop to keep CPU halted</code></pre>
+        <p><em>Explanation:</em> Upon boot, interrupts are disabled to avoid race conditions. The kernel_main function (in C) initializes the system. The infinite loop with <code>hlt</code> keeps the CPU in a low-power state.</p>
+      </li>
+    </ul>
+  </section>
+
+  <section id="kernel">
+    <h2>Kernel</h2>
+
+    <section id="main-loop">
+      <h3>Main Loop (<code>kernel/main.c</code>)</h3>
+      <p>This is the core loop that initializes all drivers and GUI, then continuously updates the screen and mouse cursor.</p>
+      <pre><code>void kernel_main() {
+  vga_clear();
+  gui_init();
+  mouse_init();
+
+  draw_cursor(mouse_x, mouse_y);
+
+  while (1) {
+      gui_present();
+      draw_cursor(mouse_x, mouse_y);
+  }
+}</code></pre>
+      <p><em>Explanation:</em> First, the VGA screen is cleared. GUI and mouse systems are initialized. Then it draws the cursor at the current mouse coordinates. The infinite loop continually refreshes the GUI and cursor, ensuring the display is updated with any changes.</p>
+    </section>
+
+    <section id="vga-driver">
+      <h3>VGA Driver (<code>kernel/drivers/vga.c</code>)</h3>
+      <p>The VGA driver manages text mode output using an offscreen buffer for double-buffering.</p>
+      <pre><code>void vga_flush() {
+  memcpy((void*)VGA_MEMORY, vga_buffer, VGA_WIDTH * VGA_HEIGHT * 2);
+}
+
+void vga_clear() {
+  for (int i = 0; i &lt; VGA_WIDTH * VGA_HEIGHT; i++) {
+      vga_buffer[i] = ' ' | (COLOR_BLACK &lt;&lt; 8);
+  }
+}</code></pre>
+      <p><em>Explanation:</em> The <code>vga_flush</code> function copies the offscreen buffer to the VGA memory region, updating the displayed text. The <code>vga_clear</code> fills the buffer with blank spaces with black background color, effectively clearing the screen.</p>
+    </section>
+
+    <section id="mouse-driver">
+      <h3>Mouse Driver (<code>kernel/drivers/mouse.c</code>)</h3>
+      <p>Handles PS/2 mouse input through IRQ interrupts, packet parsing, cursor position updates, and drawing.</p>
+      <pre><code>void mouse_isr() {
+  static uint8_t mouse_packet[3];
+  static int mouse_packet_index = 0;
+
+  mouse_packet[mouse_packet_index++] = inb(0x60);
+  if (mouse_packet_index == 3) {
+      mouse_packet_index = 0;
+      // Parse packet, update mouse_x, mouse_y coordinates
+      // Redraw cursor at new position
+      send_eoi();
+  }
+}</code></pre>
+      <p><em>Explanation:</em> Each mouse interrupt delivers one byte of a 3-byte packet. Once all three bytes arrive, the code decodes movement and button states. The cursor coordinates are updated and redrawn. An End-Of-Interrupt (EOI) signal is sent to the Programmable Interrupt Controller to acknowledge processing.</p>
+    </section>
+
+    <section id="gui-system">
+      <h3>GUI System (<code>gui/gui.c</code>)</h3>
+      <p>Draws simple windows with a colored title bar and centered text.</p>
+      <pre><code>void gui_draw_window(int x, int y, int width, int height, const char* title) {
+  vga_draw_rect(x, y, width, height, COLOR_LIGHTGRAY);
+  vga_draw_rect(x, y, width, 1, COLOR_BLUE); // title bar
+  vga_print_centered(x, y, width, title, COLOR_WHITE);
+}</code></pre>
+      <p><em>Explanation:</em> This function draws a rectangular window filled with a light gray background. The top row is colored blue as a title bar, with the window title centered in white text. It relies on VGA drawing primitives.</p>
+    </section>
+  </section>
+
+  <section id="libraries">
+    <h2>Libraries</h2>
+    <ul>
+      <li>
+        <strong>String Utilities (<code>lib/string.c</code>)</strong>
+        <pre><code>size_t strlen(const char *str) {
+  size_t len = 0;
+  while (str[len]) len++;
+  return len;
+}</code></pre>
+        <p><em>Explanation:</em> This is a simple implementation of <code>strlen</code>, which counts characters in a null-terminated string until it hits the terminator.</p>
+      </li>
+      <li>
+        <strong>Standard IO (<code>lib/stdio.c</code>)</strong>
+        <pre><code>int printf(const char* fmt, ...) {
+  va_list args;
+  va_start(args, fmt);
+  int count = vprintf(fmt, args);
+  va_end(args);
+  return count;
+}</code></pre>
+        <p><em>Explanation:</em> This function wraps a variable argument list, calling <code>vprintf</code> to handle the formatted output, then cleans up and returns the number of characters printed.</p>
+      </li>
+    </ul>
+  </section>
+
+  <section id="build-and-link">
+    <h2>Build and Link</h2>
+    <p>The build system uses <code>make</code> with GCC targeting i386 architecture.</p>
+    <pre><code>gcc -m32 -ffreestanding -c kernel/main.c -o kernel/main.o
+ld -m elf_i386 -T linker.ld -o lunaris.bin multiboot.o start.o kernel/main.o ...</code></pre>
+    <p><em>Explanation:</em> The kernel is compiled as a freestanding 32-bit binary with no standard library dependencies. The linker script (<code>linker.ld</code>) defines memory layout and entry points.</p>
+  </section>
+
+  <section id="source-file-overview">
+    <h2>Source File Overview</h2>
+    <table>
+      <thead>
+        <tr><th>File</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>multiboot.s</td><td>Multiboot header assembly code</td></tr>
+        <tr><td>start.s</td><td>CPU entry point and interrupt disable</td></tr>
+        <tr><td>kernel/main.c</td><td>Main kernel code with GUI loop</td></tr>
+        <tr><td>kernel/drivers/vga.c</td><td>VGA driver for text mode</td></tr>
+        <tr><td>kernel/drivers/mouse.c</td><td>PS/2 mouse interrupt handler</td></tr>
+        <tr><td>gui/gui.c</td><td>GUI window drawing</td></tr>
+        <tr><td>lib/string.c</td><td>String utility functions</td></tr>
+        <tr><td>lib/stdio.c</td><td>Standard IO and printing</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="search-function">
+    <h2>Search Function</h2>
+    <p>This search input filters the navigation links on the sidebar:</p>
+    <pre><code>document.getElementById('search-input').addEventListener('input', function() {
+  const filter = this.value.toLowerCase();
+  const links = document.querySelectorAll('#nav-list a');
+  links.forEach(link => {
+    const text = link.textContent.toLowerCase();
+    link.style.display = text.includes(filter) ? 'block' : 'none';
+  });
+});</code></pre>
+  </section>
+
+</main>
+
+<script>
+  const searchInput = document.getElementById('search-input');
+  const navList = document.getElementById('nav-list');
+  const links = navList.getElementsByTagName('a');
+
+  searchInput.addEventListener('input', () => {
+    const filter = searchInput.value.toLowerCase();
+    for (let i = 0; i < links.length; i++) {
+      const text = links[i].textContent.toLowerCase();
+      links[i].style.display = text.includes(filter) ? 'block' : 'none';
+    }
+  });
+
+  // Optional: highlight the section in content on click and update URL hash
+  for (let link of links) {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetId = link.getAttribute('href').substring(1);
+      const targetSection = document.getElementById(targetId);
+      if (targetSection) {
+        targetSection.scrollIntoView({ behavior: 'smooth' });
+        history.replaceState(null, '', '#' + targetId);
+      }
+    });
+  }
+</script>
+
+</body>
+</html>
