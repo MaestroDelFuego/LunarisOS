@@ -15,6 +15,7 @@ Project Structure
 ----------------
 The project is organized as follows:
 
+```
 neo98/
 ├── gui/
 │   ├── gui.c           # Core GUI functions (screen clearing, taskbar rendering)
@@ -43,6 +44,7 @@ neo98/
 ├── mouse_irq.asm       # Mouse IRQ handler in assembly
 ├── linker.ld           # Linker script for kernel layout
 └── Makefile            # Build script for creating the bootable ISO
+```
 
 Prerequisites
 -------------
