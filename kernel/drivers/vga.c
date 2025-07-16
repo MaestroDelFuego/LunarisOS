@@ -1,18 +1,11 @@
-#include <stdint.h>
 #include "vga.h"
 
-#define VGA_WIDTH 80
-#define VGA_HEIGHT 25
-
-// VGA hardware buffer (actual screen memory)
 uint16_t* vga_buffer = (uint16_t*)0xB8000;
-
-// Offscreen buffer in RAM for double buffering
 static uint16_t offscreen_buffer[VGA_WIDTH * VGA_HEIGHT];
 
-int vga_row = 0, vga_col = 0;
+static int vga_row = 0, vga_col = 0;
 
-void vga_clear() {
+void vga_clear(void) {
     for (int i = 0; i < VGA_WIDTH * VGA_HEIGHT; i++) {
         offscreen_buffer[i] = (0x07 << 8) | ' ';  // light gray on black
     }
@@ -20,8 +13,7 @@ void vga_clear() {
     vga_col = 0;
 }
 
-// Flush offscreen buffer to VGA hardware buffer
-void vga_flush() {
+void vga_flush(void) {
     for (int i = 0; i < VGA_WIDTH * VGA_HEIGHT; i++) {
         vga_buffer[i] = offscreen_buffer[i];
     }
@@ -48,5 +40,13 @@ void vga_draw_rect(int x, int y, int w, int h, uint8_t color) {
                 offscreen_buffer[row * VGA_WIDTH + col] = (color << 8) | ' ';
             }
         }
+    }
+}
+
+void vga_draw_string(int x, int y, const char* str, uint8_t color) {
+    if (x < 0 || x >= VGA_WIDTH || y < 0 || y >= VGA_HEIGHT) return;
+    uint16_t* pos = offscreen_buffer + y * VGA_WIDTH + x;
+    while (*str && (pos - offscreen_buffer) < VGA_WIDTH * VGA_HEIGHT) {
+        *pos++ = (color << 8) | *str++;
     }
 }
