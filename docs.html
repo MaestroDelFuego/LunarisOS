@@ -214,6 +214,88 @@
       <li>Mouse input via PS/2 protocol</li>
       <li>Modular kernel design with drivers and libraries</li>
     </ul>
+      <h1>🌙 LunarisOS - neo98 Folder Structure</h1>
+
+  <p>This document provides a detailed view of the <strong>neo98</strong> directory inside LunarisOS, including source files, roles, and technical purpose of each part in the OS development pipeline.</p>
+
+  <h2 class="folder">📁 Root (neo98/)</h2>
+  <ul>
+    <li class="file"><strong>Makefile</strong> – Controls compilation of the kernel, GUI, and drivers.</li>
+    <li class="file"><strong>linker.ld</strong> – Linker script for kernel memory layout (sets kernel entry point, stack, and segments).</li>
+    <li class="file"><strong>start.s</strong> – Initial assembly code that runs before C code (sets up stack, jumps to kernel_main).</li>
+    <li class="file"><strong>multiboot.s</strong> – Ensures the OS is compliant with the Multiboot specification (used by GRUB).</li>
+    <li class="file"><strong>start.o, multiboot.o</strong> – Compiled object files from the above assembly sources.</li>
+    <li class="file"><strong>neo98.iso</strong> – Bootable ISO image generated during build.</li>
+  </ul>
+
+  <h2 class="folder">📁 boot/</h2>
+  <ul>
+    <li class="file"><strong>grub.cfg</strong> – Bootloader config for GRUB to load the kernel.</li>
+  </ul>
+
+  <h2 class="folder">📁 build/iso/boot/</h2>
+  <ul>
+    <li class="file"><strong>kernel.bin</strong> – Final kernel binary ready to boot.</li>
+  </ul>
+
+  <h2 class="folder">📁 gui/</h2>
+  <ul>
+    <li class="file"><strong>gui.c</strong> – Core GUI logic (likely drawing windows, elements).</li>
+    <li class="file"><strong>gui.o</strong> – Compiled version.</li>
+  </ul>
+
+  <h2 class="folder">📁 gui/taskbar/</h2>
+  <ul>
+    <li class="file"><strong>taskbar.c</strong> – Code for displaying and managing the taskbar.</li>
+  </ul>
+
+  <h2 class="folder">📁 include/</h2>
+  <ul>
+    <li class="file"><strong>gui.h</strong> – GUI-related definitions (functions for drawing, screen buffer).</li>
+    <li class="file"><strong>idt.h</strong> – Interrupt Descriptor Table definitions.</li>
+    <li class="file"><strong>io.h</strong> – I/O port interaction macros (inb, outb).</li>
+    <li class="file"><strong>mouse.h</strong> – Mouse driver interfaces.</li>
+    <li class="file"><strong>stdio.h</strong>, <strong>string.h</strong> – Custom versions of C stdlib.</li>
+    <li class="file"><strong>taskbar.h</strong> – Header for taskbar logic.</li>
+    <li class="file"><strong>types.h</strong> – Typedefs for uint32_t, bool, etc.</li>
+    <li class="file"><strong>vga.h</strong> – Interface for VGA text and pixel mode graphics.</li>
+  </ul>
+
+  <h2 class="folder">📁 kernel/</h2>
+  <ul>
+    <li class="file"><strong>main.c</strong> – Entry point of the kernel (kernel_main function).</li>
+    <li class="file"><strong>idt.c</strong> – Sets up interrupt handlers.</li>
+    <li class="file"><strong>*.o</strong> – Compiled object files.</li>
+  </ul>
+
+  <h2 class="folder">📁 kernel/asm/</h2>
+  <ul>
+    <li class="file"><strong>idt_asm.asm</strong> – Assembly stubs for ISRs (interrupt service routines).</li>
+    <li class="file"><strong>mouse_irq.asm</strong> – Low-level mouse interrupt handlers.</li>
+  </ul>
+
+  <h2 class="folder">📁 kernel/drivers/</h2>
+  <ul>
+    <li class="file"><strong>vga.c</strong> – Direct control of video memory for rendering text/pixels.</li>
+    <li class="file"><strong>io.c</strong> – Functions for interacting with hardware I/O.</li>
+    <li class="file"><strong>mouse.c</strong> – PS/2 mouse initialization and handling.</li>
+  </ul>
+
+  <h2 class="folder">📁 lib/</h2>
+  <ul>
+    <li class="file"><strong>stdio.c</strong> – Implements basic printing/logging (like `printf`).</li>
+    <li class="file"><strong>string.c</strong> – Custom string functions (`strlen`, `strcmp`, etc.).</li>
+  </ul>
+
+  <h2 class="folder">📁 Empty/Placeholder Folders</h2>
+  <ul>
+    <li class="folder">apps/</li>
+    <li class="folder">fs/</li>
+    <li class="folder">gui/windows/</li>
+  </ul>
+
+  <p><strong>Note:</strong> These folders are likely planned for future expansion (apps, filesystem, window manager, etc.)</p>
+
   </section>
 
   <section id="boot-process">
