@@ -1,24 +1,47 @@
+#include <stdint.h>
+#include <stddef.h>
+#include <string.h>
 #include "vga.h"
-#include "gui.h"
-#include "mouse.h"
-#include "types.h"
+#include "keyboard.h"
 
-void kernel_main() {
-    vga_clear();
-    gui_init();
-    mouse_init();  // Initialize mouse hardware & IRQ
-    gui_draw_taskbar();
-    // Initial cursor draw
-    draw_cursor(mouse_x, mouse_y);
+void kernel_main(void) {
+    uint8_t color = vga_entry_color(VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLACK);
+    vga_clear(color);
+
+    vga_write("Simple text kernel\n", color);
+    vga_write("Type commands below:\n> ", color);
+
+    init_keyboard();  // <<< must be called before reading input
+
+    char buffer[80];
+    size_t len = 0;
 
     while (1) {
-        // Ideally, this loop waits for interrupts or events.
-        // For demonstration, you might refresh screen here:
-        
-        // Copy offscreen to VGA buffer (if using double buffering)
-        gui_present();
+        char c = keyboard_getchar();
+        if (!c) continue;
 
-        // Draw cursor at current position (handles restoring background)
-        draw_cursor(mouse_x, mouse_y);
+        if (c == '\n') {
+            buffer[len] = 0;
+            vga_putchar('\n', color);
+
+            if (strcmp(buffer, "clear") == 0) {
+                vga_clear(color);
+            } else {
+                vga_write("You typed: ", color);
+                vga_write(buffer, color);
+                vga_putchar('\n', color);
+            }
+
+            len = 0;
+            vga_write("> ", color);
+        } else if (c == '\b') {
+            if (len > 0) {
+                len--;
+                if (len < 80) vga_putchar('\b', color);
+            }
+        } else {
+            buffer[len++] = c;
+            vga_putchar(c, color);
+        }
     }
 }

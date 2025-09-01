@@ -2,25 +2,23 @@
 #define VGA_H
 
 #include <stdint.h>
+#include <stddef.h>
 
-#define VGA_WIDTH 80
+#define VGA_WIDTH  80
 #define VGA_HEIGHT 25
+#define VGA_MEM    ((uint16_t*)0xB8000)
 
-extern uint16_t* vga_buffer;
+enum vga_color { VGA_COLOR_BLACK = 0, VGA_COLOR_LIGHT_GREY = 7 };
 
-// Initialize VGA (clear buffers, reset cursor)
-void vga_clear(void);
 
-// Flush offscreen buffer to VGA memory (hardware)
-void vga_flush(void);
+extern char* vga_buffer;   // declaration for other files
+void vga_print(const char* str, uint8_t color);
 
-// Print string at current cursor position, handling newlines
-void vga_print(const char* str);
+uint8_t vga_entry_color(uint8_t fg, uint8_t bg);
+uint16_t vga_entry(unsigned char c, uint8_t color);
 
-// Draw rectangle filled with spaces in given color (color is 8-bit attribute)
-void vga_draw_rect(int x, int y, int w, int h, uint8_t color);
-
-// Draw string at specified position with given 8-bit color
-void vga_draw_string(int x, int y, const char* str, uint8_t color);
+void vga_clear(uint8_t color);
+void vga_putchar(char c, uint8_t color);
+void vga_write(const char* s, uint8_t color);
 
 #endif

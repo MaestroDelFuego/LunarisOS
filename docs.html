@@ -4,171 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>NEO98 LunarisOS Documentation</title>
-<style>
-  /* Reset and base */
-  *, *::before, *::after {
-    box-sizing: border-box;
-  }
-  body {
-    margin: 0;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.6;
-    color: #222;
-    background-color: #fafafa;
-    display: flex;
-    min-height: 100vh;
-  }
-  a {
-    color: #0056b3;
-    text-decoration: none;
-  }
-  a:hover {
-    text-decoration: underline;
-  }
 
-  /* Sidebar */
-  #sidebar {
-    background: #222831;
-    color: #eeeeee;
-    width: 280px;
-    padding: 1.5rem 1.75rem;
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    overflow-y: auto;
-    border-right: 3px solid #00adb5;
-  }
-  #sidebar h1 {
-    font-weight: 700;
-    font-size: 1.75rem;
-    margin-bottom: 1.25rem;
-    letter-spacing: 0.05em;
-  }
-  #search-input {
-    width: 100%;
-    padding: 0.5rem 0.75rem;
-    border-radius: 6px;
-    border: none;
-    font-size: 1rem;
-    margin-bottom: 1.5rem;
-    outline-offset: 2px;
-    outline-color: #00adb5;
-    background: #393e46;
-    color: #eeeeee;
-  }
-  nav ul {
-    list-style: none;
-    padding-left: 0;
-    margin: 0;
-  }
-  nav li {
-    margin-bottom: 0.75rem;
-  }
-  nav li ul {
-    margin-top: 0.4rem;
-    margin-left: 1rem;
-    border-left: 2px solid #00adb5;
-    padding-left: 0.75rem;
-  }
-  nav li a {
-    display: block;
-    padding: 0.3rem 0.5rem;
-    border-radius: 4px;
-  }
-  nav li a.active,
-  nav li a:hover {
-    background-color: #00adb5;
-    color: #222831;
-    font-weight: 600;
-  }
-
-  /* Main content */
-  #content {
-    margin-left: 280px;
-    padding: 2.5rem 3rem;
-    max-width: 900px;
-    background: white;
-    box-shadow: 0 0 12px rgba(0,0,0,0.08);
-    flex-grow: 1;
-  }
-  #content h2 {
-    font-size: 2rem;
-    margin-top: 3rem;
-    border-bottom: 3px solid #00adb5;
-    padding-bottom: 0.3rem;
-  }
-  #content h3 {
-    margin-top: 2.25rem;
-    color: #00adb5;
-    font-weight: 600;
-  }
-  #content p {
-    margin-top: 1rem;
-    font-size: 1.1rem;
-    max-width: 780px;
-  }
-  #content ul {
-    margin: 1rem 0 1.5rem 1.25rem;
-  }
-  #content ul li {
-    margin-bottom: 0.75rem;
-  }
-  #content table {
-    border-collapse: collapse;
-    width: 100%;
-    max-width: 900px;
-    margin: 1.5rem 0;
-  }
-  #content table th,
-  #content table td {
-    border: 1px solid #ddd;
-    padding: 0.65rem 1rem;
-    text-align: left;
-  }
-  #content table th {
-    background-color: #00adb5;
-    color: white;
-    font-weight: 600;
-  }
-  pre {
-    background-color: #222831;
-    color: #00ffcc;
-    padding: 1rem 1.25rem;
-    border-radius: 8px;
-    font-family: "Fira Mono", Consolas, "Courier New", monospace;
-    font-size: 0.9rem;
-    overflow-x: auto;
-    white-space: pre-wrap;
-    margin-top: 0.75rem;
-    box-shadow: inset 0 0 10px #00adb5aa;
-  }
-  code {
-    font-family: "Fira Mono", Consolas, monospace;
-    background: #e1f7f7;
-    padding: 0.1rem 0.3rem;
-    border-radius: 4px;
-    color: #007a7a;
-    font-size: 0.95rem;
-  }
-
-  /* Responsive */
-  @media (max-width: 768px) {
-    #sidebar {
-      position: relative;
-      width: 100%;
-      height: auto;
-      border-right: none;
-      border-bottom: 3px solid #00adb5;
-      padding-bottom: 1rem;
-    }
-    #content {
-      margin-left: 0;
-      padding: 1.5rem 1.5rem 3rem;
-      max-width: 100%;
-    }
-  }
-</style>
 </head>
 <body>
 
@@ -195,6 +31,7 @@
       </li>
       <li><a href="#libraries">Libraries</a></li>
       <li><a href="#build-and-link">Build and Link</a></li>
+      <li><a href="#compile">Practical Automation</a></li>
       <li><a href="#source-file-overview">Source File Overview</a></li>
       <li><a href="#search-function">Search Function</a></li>
     </ul>
@@ -445,6 +282,78 @@ ld -m elf_i386 -T linker.ld -o lunaris.bin multiboot.o start.o kernel/main.o ...
       </tbody>
     </table>
   </section>
+  <section id="compile">
+  <h2>Practical Automation</h2>
+  <p>
+    While the <strong>Build and Link</strong> section showed the manual process, in practice LunarisOS uses a 
+    <code>Makefile</code> to fully automate compilation, linking, ISO creation, and running in QEMU.  
+    This ensures consistency and saves time when rebuilding the kernel.
+  </p>
+
+  <pre><code>ISO_NAME = neo98.iso
+BUILD_DIR = build/iso
+KERNEL = $(BUILD_DIR)/boot/kernel.bin
+
+C_SOURCES = kernel/main.c kernel/drivers/vga.c gui/gui.c lib/string.c lib/stdio.c kernel/drivers/mouse.c
+ASM_SOURCES = start.s multiboot.s
+OBJECTS = kernel/main.o kernel/drivers/vga.o gui/gui.o lib/string.o lib/stdio.o kernel/drivers/mouse.o start.o multiboot.o
+
+ASM_BOOT_OBJS = multiboot.o start.o
+OTHER_OBJS = kernel/main.o kernel/drivers/vga.o gui/gui.o lib/string.o lib/stdio.o kernel/drivers/mouse.o
+
+all: clean iso
+
+%.o: %.c
+	i686-elf-gcc -ffreestanding -m32 -nostdlib -Iinclude -c $< -o $@
+
+%.o: %.s
+	i686-elf-as $< -o $@
+
+kernel: $(OBJECTS)
+	mkdir -p $(BUILD_DIR)/boot
+	i686-elf-ld -T linker.ld -o $(KERNEL) $(ASM_BOOT_OBJS) $(OTHER_OBJS)
+
+iso: kernel
+	mkdir -p $(BUILD_DIR)/boot/grub
+	cp boot/grub.cfg $(BUILD_DIR)/boot/grub/
+	grub-mkrescue -o $(ISO_NAME) $(BUILD_DIR)
+
+run: iso
+	qemu-system-i386 -cdrom $(ISO_NAME)
+
+clean:
+	rm -rf build *.iso *.o</code></pre>
+
+  <h3>Target Breakdown</h3>
+  <ul>
+    <li><strong>all</strong> – Cleans previous build artifacts, then builds the bootable ISO.</li>
+    <li><strong>%.o: %.c</strong> – Rule for compiling any C file into an object file using <code>i686-elf-gcc</code>.  
+      <ul>
+        <li><code>-ffreestanding</code> → No assumptions about a host environment or libraries.</li>
+        <li><code>-m32</code> → Target 32-bit x86.</li>
+        <li><code>-nostdlib</code> → Don’t link to the host’s libc.</li>
+        <li><code>-Iinclude</code> → Use project’s own header files.</li>
+      </ul>
+    </li>
+    <li><strong>%.o: %.s</strong> – Assembles <code>.s</code> files into object files with <code>i686-elf-as</code>.</li>
+    <li><strong>kernel</strong> – Links all compiled objects into the kernel binary (<code>kernel.bin</code>) using the linker script.  
+      <ul>
+        <li><code>ASM_BOOT_OBJS</code> → Startup assembly (multiboot + entry code).</li>
+        <li><code>OTHER_OBJS</code> → Kernel C drivers, libraries, and main loop.</li>
+      </ul>
+    </li>
+    <li><strong>iso</strong> – Packages the kernel into a bootable GRUB ISO:  
+      <ul>
+        <li>Creates <code>build/iso/boot/grub</code>.</li>
+        <li>Copies <code>grub.cfg</code> into the ISO.</li>
+        <li>Runs <code>grub-mkrescue</code> to produce <code>neo98.iso</code>.</li>
+      </ul>
+    </li>
+    <li><strong>run</strong> – Boots the ISO directly in QEMU (32-bit mode).</li>
+    <li><strong>clean</strong> – Removes build artifacts (<code>build/</code>, <code>.iso</code>, <code>.o</code>).</li>
+  </ul>
+</section>
+
 
   <section id="search-function">
     <h2>Search Function</h2>

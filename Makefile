@@ -2,12 +2,12 @@ ISO_NAME = neo98.iso
 BUILD_DIR = build/iso
 KERNEL = $(BUILD_DIR)/boot/kernel.bin
 
-C_SOURCES = kernel/main.c kernel/drivers/vga.c gui/gui.c lib/string.c lib/stdio.c kernel/drivers/mouse.c
-ASM_SOURCES = start.s multiboot.s
-OBJECTS = kernel/main.o kernel/drivers/vga.o gui/gui.o lib/string.o lib/stdio.o kernel/drivers/mouse.o start.o multiboot.o
+C_SOURCES = kernel/main.c kernel/drivers/vga.c kernel/drivers/mouse.c gui/gui.c lib/string.c lib/stdio.c kernel/drivers/keyboard.c kernel/drivers/isr.c
+OBJECTS = kernel/main.o kernel/drivers/vga.o kernel/drivers/mouse.o gui/gui.o lib/string.o lib/stdio.o kernel/drivers/keyboard.o kernel/drivers/isr.o start.o multiboot.o
+OTHER_OBJS = kernel/main.o kernel/drivers/vga.o gui/gui.o lib/string.o lib/stdio.o kernel/drivers/mouse.o kernel/drivers/keyboard.o kernel/drivers/isr.o
+
 
 ASM_BOOT_OBJS = multiboot.o start.o
-OTHER_OBJS = kernel/main.o kernel/drivers/vga.o gui/gui.o lib/string.o lib/stdio.o kernel/drivers/mouse.o
 
 all: clean iso
 
